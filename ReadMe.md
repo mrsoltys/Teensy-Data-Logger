@@ -1,0 +1,38 @@
+# Teensy Data Logger Example Codes
+
+The goal of this project is to create an **open-source, low-cost, portable Arduino-based data logger** using the [Teensy 4.1](https://www.pjrc.com/store/teensy41.html).
+
+---
+
+## Why Teensy 4.1?
+
+The **Teensy 4.1** was selected due to its **high analog bit depth** and **fast processing speed**, making it well-suited for data acquisition and logging applications.
+
+### Feature Comparison: Teensy 4.1 vs Arduino Uno
+
+| Feature            | Arduino Uno         | Teensy 4.1 (default specs)   |
+|--------------------|---------------------|------------------------------|
+| **Clock Speed**    | 16 MHz              | 600 MHz (can be overclocked) |
+| **ADC Resolution** | 10-bit              | 12-bit                       |
+| **DAC Capability** | None (PWM only)     | 2 DACs (MQS system)          |
+| **Total Pins**     | 20 (14 Digital I/O, 6 Analog In) | Up to 55 (42 breadboard-friendly) |
+| **Operating Voltage** | 5V              | 3.3V                         |
+
+---
+
+## Planned Features
+
+- 📊 Analog & digital data logging  
+- 💾 SD card storage  
+- 🔌 Modular sensor inputs (temperature, light, etc.)  
+- ⏱️ Timestamped logs  
+
+---
+
+## Repository Structure
+
+```plaintext
+├── examples/         # Example logging sketches
+├── docs/             # Documentation and diagrams
+├── hardware/         # Wiring guides, schematics
+└── README.md         # This file
