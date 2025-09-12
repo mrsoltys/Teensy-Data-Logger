@@ -20,12 +20,27 @@ The **Teensy 4.1** was selected due to its **high analog bit depth** and **fast 
 
 ---
 
+### Using Teensy with Arduino
+
+Follow these instructions to use teensy with arduino ide: https://www.pjrc.com/teensy/td_download.html
+
+## Choosing an SD Card
+
+For best performance with the Teensy 4.1 built-in microSD slot:
+
+- **Capacity**: 32 GB (microSDHC) or 64 GB (microSDXC) is ideal  
+- **Speed Class**: Look for UHS-I, Class 10, U3 or V30 rating (reliable sustained write speeds)  
+- **Format**: Use **FAT32** (reformat SDXC cards if needed)  
+- **Brands**: Stick to trusted options (SanDisk Extreme/Extreme Pro, Samsung EVO, Kingston Canvas)  
+
+Larger or faster-rated cards (UHS-II, SD Express) will work but only at UHS-I speeds.
+
 ## Planned Features
 
-- 📊 Analog & digital data logging  
-- 💾 SD card storage  
-- 🔌 Modular sensor inputs (temperature, light, etc.)  
-- ⏱️ Timestamped logs  
+-  Analog & digital data logging  
+-  SD card storage  
+-  Modular sensor inputs (temperature, light, etc.)  
+-  Timestamped logs  
 
 ---
 
