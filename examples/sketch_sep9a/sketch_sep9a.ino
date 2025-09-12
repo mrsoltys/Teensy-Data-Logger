@@ -1,11 +1,12 @@
 
-#include <SPI.h>
+//For SD card read/write
 #include <SD.h>
 File dataFile;
 
 //For reading accelerometer 
 #include <Wire.h> // Must include Wire library for I2C
 #include <SparkFun_MMA8452Q.h> // Includes the SFE_MMA8452Q library
+#include <SPI.h>
 MMA8452Q accel; // Default MMA8452Q object create. (Address = 0x1D)
 
 
@@ -20,7 +21,7 @@ volatile char dataBuffer[BUFFER_SIZE * 32];   // adjust 32 bytes/sample based on
 //Sampling
 //=========
 //Set desired sample rate in hZ HERE, and adjust sampling code here. 
-const uint32_t SAMPLE_RATE_HZ = 750;         // Set your desired sample rate
+const float SAMPLE_RATE_HZ = 750;         // Set your desired sample rate
 //Note: The fastest sample rate for the accelerometer in this example is 800 hz
 IntervalTimer sampleTimer;
 String dataString;
@@ -37,13 +38,9 @@ void sample() {
 
 void setup() {
   //Serial.begin(9600);
+  //Sensor Setup
   accel.init(SCALE_8G, ODR_800); // Init and customize the FSR and ODR
   //Scale can be either SCALE_2G, SCALE_4G, or SCALE_8G. The "odr" variable can be either ODR_800, ODR_400, ODR_200, ODR_100, ODR_50, ODR_12, ODR_6, or ODR_1, respectively setting the data rate to 800, 400, 200, 100, 50, 12.5, 6.25, or 1.56 Hz.
-
-  pinMode(22, OUTPUT); digitalWrite(22, LOW); //GND
-  pinMode(21, OUTPUT); digitalWrite(21, LOW); //I1
-  pinMode(20, OUTPUT); digitalWrite(20, LOW); //I2
-  pinMode(17, OUTPUT); digitalWrite(17, HIGH); //3.3V
 
   pinMode(LED_BUILTIN, OUTPUT);
 
