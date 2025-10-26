@@ -7,14 +7,11 @@
 
 // ========== CONFIG ==========
 const int chipSelect = BUILTIN_SDCARD;
-const float SAMPLE_RATE_HZ = 0.01;  // 0.01 Hz = one sample every 100 sec
-IntervalTimer sampleTimer;
 
 // ========== SENSORS ==========
 RV1805 rtc;
 //RV8803 rtc;
 BME280 bme;
-
 
 // ========== BUFFER ==========
 const int BUFFER_SIZE = 512;
@@ -28,14 +25,20 @@ File dataFile;
 
 // ========== BUTTON + LED ==========
 const int LED_PIN = 13;
-const int BUTTON_PIN = 29;
+const int BUTTON_PIN = 14;
 const int BUTTON_GND_PIN = 31;
 
-bool lastButtonState = HIGH;
+// Debounce state variables
+int lastRawButtonState = HIGH;     // last raw reading from digitalRead()
+int debouncedButtonState = HIGH;   // "stable" button state after debouncing
 unsigned long lastDebounceTime = 0;
-const unsigned long debounceDelay = 50;
+const unsigned long debounceDelay = 50; // ms
 
 // ========== ISR ==========
+const float SAMPLE_RATE_HZ = 0.1;  // 0.01 Hz = one sample every 100 sec
+IntervalTimer sampleTimer;
+unsigned long lastSampleMillis = 0;
+const unsigned long SAMPLE_PERIOD_MS = (1000.0 / SAMPLE_RATE_HZ);
 void sampleISR() {
   //Do nothing if not recording
   if (!recording) return;
@@ -44,7 +47,8 @@ void sampleISR() {
   float temp = bme.readTempC();
   float hum = bme.readFloatHumidity();
   float press = bme.readFloatPressure();
-
+  
+  rtc.updateTime();
   int year = rtc.getYear();
   int month = rtc.getMonth();
   int day = rtc.getDate();
@@ -94,13 +98,19 @@ void setup() {
   }
   Serial.println("RTC OK.");
 
-if (rtc.lostPower()) {  //I think this only works with the 1805
-    Serial.println("RTC lost power, setting default time...");
+  if (Serial) {
+    Serial.println("Setting RTC to compiler time...");
     rtc.setToCompilerTime();
+    float offsetHours = -6.5; //I find myself needing to adjust the clock -6.5 hrs.
+    uint8_t hour = rtc.getHours();
+    int correctedHour = (int)(hour + offsetHours + 24) % 24;
+    rtc.setHours(correctedHour);
   }
 
-  // Start the sampling timer
-  sampleTimer.begin(sampleISR, (1.0e6 / SAMPLE_RATE_HZ)); // microseconds
+  // Start the sampling timer only for fast sampling rates. Otherwise, do this manually in the loops for slow sampling rates
+  if (SAMPLE_RATE_HZ >= 0.1) {
+    sampleTimer.begin(sampleISR, (1.0e6 / SAMPLE_RATE_HZ));
+  } 
   Serial.print("Sampling at ");
   Serial.print(SAMPLE_RATE_HZ);
   Serial.println(" Hz");
@@ -108,6 +118,7 @@ if (rtc.lostPower()) {  //I think this only works with the 1805
 
 // ========== START / STOP ==========
 void startRecording() {
+  lastSampleMillis = millis() - SAMPLE_PERIOD_MS; // ensure immediate first sample
   char filename[32];
   int filenum = 0;
   do {
@@ -147,18 +158,31 @@ void stopRecording() {
 
 // ========== LOOP ==========
 void loop() {
-  // Debounce button
-  int reading = digitalRead(BUTTON_PIN);
-  if (reading != lastButtonState) {
+   // --- Debounce button (stable state only updated after stable period) ---
+  int rawReading = digitalRead(BUTTON_PIN);
+
+  // If the raw reading changed, reset the debounce timer
+  if (rawReading != lastRawButtonState) {
     lastDebounceTime = millis();
   }
+
+  // Only if the input has been stable longer than debounceDelay do we accept it
   if ((millis() - lastDebounceTime) > debounceDelay) {
-    if (reading == LOW && lastButtonState == HIGH) {
-      if (!recording) startRecording();
-      else stopRecording();
+    // If the debounced state is different from the raw reading, update it
+    if (rawReading != debouncedButtonState) {
+      debouncedButtonState = rawReading;
+
+      // We're using INPUT_PULLUP: pressed -> LOW, released -> HIGH
+      if (debouncedButtonState == LOW) {
+        // Button was pressed (falling edge after debounce)
+        if (!recording) startRecording();
+        else stopRecording();
+      }
     }
   }
-  lastButtonState = reading;
+
+  // Save the raw reading for next loop comparison
+  lastRawButtonState = rawReading;
 
   // LED behavior
   if (recording) {
@@ -180,5 +204,13 @@ void loop() {
     bufferIndex = 0;
     bufferReady = false;
     Serial.println("Buffer written.");
+  }
+
+  // ---- Replace ISR with millis() check for very slow rates ----
+  if (SAMPLE_RATE_HZ < 0.1) {
+    while (millis() - lastSampleMillis >= SAMPLE_PERIOD_MS) {
+      lastSampleMillis += SAMPLE_PERIOD_MS;
+      sampleISR();
+    }
   }
 }
