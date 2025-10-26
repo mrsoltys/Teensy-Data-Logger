@@ -1,17 +1,20 @@
 #include <Arduino.h>
 #include <SD.h>
 #include <Wire.h>
-#include <SparkFun_RV8803.h>
+//#include <SparkFun_RV8803.h>
+#include <SparkFun_RV1805.h>
 #include <SparkFunBME280.h>
 
 // ========== CONFIG ==========
 const int chipSelect = BUILTIN_SDCARD;
 const float SAMPLE_RATE_HZ = 0.01;  // 0.01 Hz = one sample every 100 sec
+IntervalTimer sampleTimer;
 
 // ========== SENSORS ==========
-RV8803 rtc;
+RV1805 rtc;
+//RV8803 rtc;
 BME280 bme;
-IntervalTimer sampleTimer;
+
 
 // ========== BUFFER ==========
 const int BUFFER_SIZE = 512;
@@ -86,10 +89,15 @@ void setup() {
   Serial.println("BME280 OK.");
 
   if (!rtc.begin()) {
-    Serial.println("RV-8803 not found!");
+    Serial.println("RTC not found!");
     while (1);
   }
   Serial.println("RTC OK.");
+
+if (rtc.lostPower()) {  //I think this only works with the 1805
+    Serial.println("RTC lost power, setting default time...");
+    rtc.setToCompilerTime();
+  }
 
   // Start the sampling timer
   sampleTimer.begin(sampleISR, (1.0e6 / SAMPLE_RATE_HZ)); // microseconds
