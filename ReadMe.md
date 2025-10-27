@@ -20,9 +20,21 @@ The **Teensy 4.1** was selected due to its **high analog bit depth** and **fast 
 
 ---
 
+### I2C with Teensy 4.1
+
+| Teensy Pin           | Sensor Pin        |
+|--------------------|---------------------|
+| **Pin 18**    | SDA              | 
+| **Pin 19** | SCL              | 
+| **3V3** | 3V3            | 
+| **GND** | GND |
+
+Note: Teensy 4.1 has two additional i2c buses available if needed, but sensors that don't share addresses can be chained. I'm using all sensors with QUIIC connections, double check sensor address to check for conflict. 
+---
+
 ### Using Teensy with Arduino
 
-Follow these instructions to use teensy with arduino ide: https://www.pjrc.com/teensy/td_download.html
+Follow these instructions to use Teensy with arduino ide: https://www.pjrc.com/teensy/td_download.html
 
 ## Choosing an SD Card
 
