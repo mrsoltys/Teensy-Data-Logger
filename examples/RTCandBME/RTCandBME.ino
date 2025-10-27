@@ -25,7 +25,7 @@ File dataFile;
 
 // ========== BUTTON + LED ==========
 const int LED_PIN = 13;
-const int BUTTON_PIN = 14;
+const int BUTTON_PIN = 28;
 const int BUTTON_GND_PIN = 31;
 
 // Debounce state variables
@@ -76,7 +76,8 @@ void setup() {
   digitalWrite(BUTTON_GND_PIN, LOW);
 
   Serial.begin(115200);
-  while (!Serial);
+  delay(1000);
+  //while (!Serial);
   Wire.begin();
 
   Serial.println("Initializing SD...");
@@ -99,12 +100,12 @@ void setup() {
   Serial.println("RTC OK.");
 
   if (Serial) {
-    Serial.println("Setting RTC to compiler time...");
-    rtc.setToCompilerTime();
-    float offsetHours = -6; //I find myself needing to adjust the clock -6.5 hrs.
-    uint8_t hour = rtc.getHours();
-    int correctedHour = (int)(hour + offsetHours + 24) % 24;
-    rtc.setHours(correctedHour);
+  //  Serial.println("Setting RTC to compiler time...");
+  //  rtc.setToCompilerTime();
+  //  float offsetHours = -6; //I find myself needing to adjust the clock -6.5 hrs.
+  //  uint8_t hour = rtc.getHours();
+  //  int correctedHour = (int)(hour + offsetHours + 24) % 24;
+  //  rtc.setHours(correctedHour);
   }
 
   // Start the sampling timer only for fast sampling rates. Otherwise, do this manually in the loops for slow sampling rates
