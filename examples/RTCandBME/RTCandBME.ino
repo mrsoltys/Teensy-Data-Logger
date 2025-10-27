@@ -101,7 +101,7 @@ void setup() {
   if (Serial) {
     Serial.println("Setting RTC to compiler time...");
     rtc.setToCompilerTime();
-    float offsetHours = -6.5; //I find myself needing to adjust the clock -6.5 hrs.
+    float offsetHours = -6; //I find myself needing to adjust the clock -6.5 hrs.
     uint8_t hour = rtc.getHours();
     int correctedHour = (int)(hour + offsetHours + 24) % 24;
     rtc.setHours(correctedHour);
