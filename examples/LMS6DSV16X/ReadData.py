@@ -36,26 +36,27 @@ print(f"Std dt (jitter): {np.std(dt)*1e6:.2f} us")
 print(f"Mean Fs: {fs_mean:.2f} Hz")
 
 # ========= TIME SERIES =========
+scale = 1 / 4096.0  # g per LSB (for ±8g)
+
+x_g = x * scale
+y_g = y * scale
+z_g = z * scale
+
+
 plt.figure()
-plt.plot(t, x, label='X')
-plt.plot(t, y, label='Y')
-plt.plot(t, z, label='Z')
+plt.plot(t, x_g, label='X')
+plt.plot(t, y_g, label='Y')
+plt.plot(t, z_g, label='Z')
 plt.legend()
 plt.xlabel("Time (s)")
 plt.ylabel("Raw Accel")
 plt.title("Time Series")
 plt.grid()
 
-# ========= JITTER =========
-plt.figure()
-plt.plot(dt * 1e6)
-plt.title("Timing Jitter (µs)")
-plt.xlabel("Sample Index")
-plt.ylabel("dt (µs)")
-plt.grid()
-
 # ========= FFT =========
-signal = x - np.mean(x)
+mag = np.sqrt(x_g**2 + y_g**2 + z_g**2)
+
+signal = mag - np.mean(mag)
 N = len(signal)
 
 fft_vals = np.fft.rfft(signal)
@@ -63,7 +64,7 @@ freqs = np.fft.rfftfreq(N, d=1/fs_mean)
 
 plt.figure()
 plt.plot(freqs, np.abs(fft_vals))
-plt.title("FFT (X-axis)")
+plt.title("FFT (mag)")
 plt.xlabel("Frequency (Hz)")
 plt.ylabel("Magnitude")
 plt.xlim(0, fs_mean/2)

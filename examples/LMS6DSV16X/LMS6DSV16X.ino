@@ -112,6 +112,12 @@ void setup() {
   else if (ACCEL_RANGE == 8) imu.setAccelFullScale(LSM6DSV16X_8g);
   else if (ACCEL_RANGE == 16) imu.setAccelFullScale(LSM6DSV16X_16g);
 
+  // Do we want a low-pass filter? 
+  //0=agressive filtering
+  //7=very little filtering
+  imu.enableAccelLP2Filter(true);
+  imu.setAccelLP2Bandwidth(5);
+
   if (!SD.begin(BUILTIN_SDCARD)) {
     while (1) {
       digitalWrite(LED_PIN, HIGH);
