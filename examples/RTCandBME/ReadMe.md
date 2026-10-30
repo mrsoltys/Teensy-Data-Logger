@@ -12,8 +12,8 @@ This readme.m file was created with AI.
 | Component | Description | Link |
 |------------|--------------|------|
 | **Teensy 4.1** | Main microcontroller with built-in SD slot | [PJRC Teensy 4.1](https://www.pjrc.com/store/teensy41.html) |
-| **SparkFun BME280** | Measures temperature (°C), humidity (%), and pressure (Pa) via I²C | [SparkFun BME280 (SEN-13676)](https://www.sparkfun.com/products/13676) |
-| **SparkFun RV-1805** | Low-power real-time clock for accurate timestamps | [SparkFun RV-1805 (BOB-25268)](https://www.sparkfun.com/products/25268) |
+| **SparkFun BME280** | Measures temperature (°C), humidity (%), and pressure (Pa) via I²C | [SparkFun BME280 (SEN-13676)](https://www.sparkfun.com/sparkfun-atmospheric-sensor-breakout-bme280-qwiic.html?gad_source=1&gad_campaignid=21251727806&gbraid=0AAAAADsj4EQbj3yCpyUBy1opwm2D4KKS5&gclid=CjwKCAjw04HIBhB8EiwA8jGNbSJjEEdQrUV8ERfBSqi6SVDnPCepJFRdGT_9CV0JrQPiznZCvJmMlxoC72QQAvD_BwE) |
+| **SparkFun RV-1805** | Low-power real-time clock for accurate timestamps | [SparkFun RV-1805 (BOB-25268)](https://www.sparkfun.com/sparkfun-real-time-clock-module-rv-1805-qwiic.html) |
 | **Button (Momentary)** | Starts/stops data recording | — |
 | **LED (built-in)** | Blinks while recording, steady ON when idle | — |
 | **microSD Card** | Stores CSV log files (FAT32) | — |
